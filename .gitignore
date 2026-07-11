@@ -1,0 +1,15 @@
+.ruff_cache/
+.env/
+.venv/
+venv/
+__pycache__/
+*.pyc
+data/
+*.ipynb_checkpoints
+.DS_Store
+my_information
+my_profile_information.json
+access_token_stuff.json
+.env
+.obsidian/
+.obsidian

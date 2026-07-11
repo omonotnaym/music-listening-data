@@ -1,0 +1,1 @@
+each break in paragraph represents coming back to continue documentation after a break. so each written paragraph is written in one sitting and no work should be done in between the writing of paragraphs.
