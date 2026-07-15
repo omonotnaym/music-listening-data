@@ -2,4 +2,7 @@ i want to have a product that uses the data spotify and/or apple music gives use
 # first time pick rates
 you can have first time pick rates, which is asking: when beginning a music listening session, what song do i pick? 
 # pick rates
+
+^426e22
+
 you can also have just normal pick rates which is within a listening session. im sure ill come up with more insights to use the more i learn what data is given and what i can do with that data.

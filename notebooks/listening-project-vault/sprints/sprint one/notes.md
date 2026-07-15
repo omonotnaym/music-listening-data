@@ -1,0 +1,3 @@
+# pick buffer/crossfade feature
+for this version of the app, there will be no time buffer for [[product goal#^426e22|pick rates]]. the [[user stories#^b511a2|conditions]] set for what determines a pick as of this version are final and literal. there is a feature on spotify called crossfade that will start playing a song as one is ending (up to 12 seconds before the song ends) which will trigger one of the pick conditions. for accuracy, i will be allowing this to be since i think there exist more people who dont use crossfade than those who do. i also reasoned this way because timestamp glitches are less likely than someone waiting until near the end of a song to pick a new one, which i would want to catch in my pick.
+
