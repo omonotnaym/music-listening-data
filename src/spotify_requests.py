@@ -211,8 +211,10 @@ def request_recently_played():
         ),
     )
 
-    recently_played_tracks = open("recently_played_tracks.json", "w")
     response_items = {}
+    if not recently_played_request.json()["items"]:
+        return
+    recently_played_tracks = open("recently_played_tracks.json", "w")
     page_num = 1
     response_items["page " + str(page_num)] = recently_played_request.json()
     next_page = recently_played_request.json()["next"]
