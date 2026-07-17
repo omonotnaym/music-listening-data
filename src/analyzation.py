@@ -1,52 +1,5 @@
 import json, time, datetime
 
-fake_set = {
-    "page 1": {
-        "items": [
-            {
-                "track": {"name": "song A", "duration_ms": 120000},
-                "played_at": "2026-07-15T12:28:59.0Z",
-            },
-            {
-                "track": {"name": "song C", "duration_ms": 120000},
-                "played_at": "2026-07-15T12:26:59.0Z",
-            },
-            {
-                "track": {"name": "song B", "duration_ms": 120000},
-                "played_at": "2026-07-15T12:24:59.0Z",
-            },
-            {
-                "track": {"name": "song A", "duration_ms": 120000},
-                "played_at": "2026-07-15T12:22:59.0Z",
-            },
-            {
-                "track": {"name": "song C", "duration_ms": 120000},
-                "played_at": "2026-07-15T12:22:59.0Z",
-            },
-            {
-                "track": {"name": "song B", "duration_ms": 120000},
-                "played_at": "2026-07-15T12:20:59.0Z",
-            },
-            {
-                "track": {"name": "song A", "duration_ms": 120000},
-                "played_at": "2026-07-15T12:18:59.0Z",
-            },
-            {
-                "track": {"name": "song C", "duration_ms": 120000},
-                "played_at": "2026-07-15T12:18:59.0Z",
-            },
-            {
-                "track": {"name": "song B", "duration_ms": 120000},
-                "played_at": "2026-07-15T11:16:59.0Z",
-            },
-            {
-                "track": {"name": "song A", "duration_ms": 120000},
-                "played_at": "2026-07-15T11:15:00.0Z",
-            },
-        ]
-    }
-}
-
 
 def detect_recently_played_tracks_first_picks(tracks):
     previous_track = None
@@ -57,7 +10,6 @@ def detect_recently_played_tracks_first_picks(tracks):
             all_first_picks["total_picks"] += 1
             all_first_picks[track["name"]] = 1
         else:
-            print(int(track["played_at"]))
             if (
                 int(track["played_at"])
                 - (
@@ -118,9 +70,23 @@ def get_recently_played_tracks_details(pages):
     return tracks
 
 
-print(
-    detect_recently_played_tracks_first_picks(
-        get_recently_played_tracks_details(fake_set)
-    )
-)
-print(detect_recently_played_tracks_picks(get_recently_played_tracks_details(fake_set)))
+def combine_recently_played_tracks_picks(first_picks: dict, picks: dict):
+    aggregation = {}
+    total_picks = first_picks["total_picks"] + picks["total_picks"]
+    first_picks_set = set([*first_picks.keys()])
+    picks_set = set([*picks.keys()])
+    differences = [
+        *first_picks_set.difference(picks_set),
+        *picks_set.difference(first_picks_set),
+    ]
+    all_picks_keys = first_picks_set.intersection(picks_set).difference({"total_picks"})
+    if all_picks_keys:
+        for key in all_picks_keys:
+            aggregation[key] = (first_picks[key] + picks[key]) / total_picks * 100
+    for difference in differences:
+        if difference in first_picks_set:
+            aggregation[difference] = first_picks[difference] / total_picks * 100
+        else:
+            aggregation[difference] = picks[difference] / total_picks * 100
+    print(aggregation)
+    return {"total_picks": total_picks, "picks": {**aggregation}}

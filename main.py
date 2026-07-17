@@ -1,11 +1,11 @@
-import fastapi
+import fastapi, json
 from src import spotify_requests, analyzation
 
 app = fastapi.FastAPI()
 
 
 @app.get("/authorize")
-def get_user_authorization():
+def authorize():
     """
     strictly for redirecting users to the spotify authorize endpoint to get permissions
     """
@@ -33,7 +33,7 @@ def callback(code: str = None):
 @app.get("/")
 def home():
     """
-    displays the html for my home page and also will check for whether or not the tokens need to be refreshed
+    displays the html for my home page and alsAnd I Toldo will check for whether or not the tokens need to be refreshed
     """
     # h
     # t
@@ -54,3 +54,25 @@ def listening_history():
     gets the listening history of the user from the past 30 days (for now) and shows them the tracks
     """
     spotify_requests.request_recently_played()
+    # h
+    # t
+    # m
+    # l
+    # stub
+
+
+@app.get("/listening-history/pick-rates")
+def listening_history_pick_rates():
+    """
+    gives the user the resulting picks rates of their recently played tracks
+    """
+    with open("recently_played_tracks.json", "r") as f:
+        recently_played_tracks = json.load(f)
+    return analyzation.combine_recently_played_tracks_picks(
+        analyzation.detect_recently_played_tracks_first_picks(
+            analyzation.get_recently_played_tracks_details(recently_played_tracks)
+        ),
+        analyzation.detect_recently_played_tracks_picks(
+            analyzation.get_recently_played_tracks_details(recently_played_tracks)
+        ),
+    )
