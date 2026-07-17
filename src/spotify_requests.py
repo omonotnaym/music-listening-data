@@ -218,8 +218,8 @@ def request_recently_played():
     page_num = 1
     response_items["page " + str(page_num)] = recently_played_request.json()
     next_page = recently_played_request.json()["next"]
-
     while next_page:
+        print("hi")
         recently_played_request = check_request(
             requests.request(
                 "GET",
