@@ -18,10 +18,17 @@ class NotAuthorizedError(Exception):
     pass
 
 
+class NoRecentlyPlayedTracksError(Exception):
+    pass
+
+
 # MISC----------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 def does_token_file_exist():
+    """
+    checks to see if the file that holds our authorization response exists, asking the question of whether the current user is currently authorized or not
+    """
     try:
         with (
             open("access_token_stuff.json", "r") as f
@@ -41,6 +48,9 @@ def does_token_file_exist():
 
 
 def get_redirect_uri():
+    """
+    gets the redirect uri listed on our spotify application dashboard
+    """
     return "http://127.0.0.1:8000/callback"
 
 
@@ -58,6 +68,9 @@ def get_authorization_url():
 
 
 def get_last_response_body():
+    """
+    gets the body of the last response in our authorization flow
+    """
     if does_token_file_exist():
         with open("access_token_stuff.json", "r") as f:
             last_response_body = json.load(f)
@@ -67,6 +80,9 @@ def get_last_response_body():
 
 
 def get_b64_header():
+    """
+    gets the header needed for api authorization
+    """
     return {
         "Authorization": "Basic "
         + str(base64.b64encode(client_credentials.encode()).decode()),
@@ -78,7 +94,7 @@ def get_b64_header():
 
 def get_bearer_header():
     """
-    this header is for fetching something specific. i think it's for getting user data... idk yet. will verify.
+    gets the header required for api requests
     """
     return {
         "Authorization": "Bearer " + get_last_response_body()["access_token"],
@@ -195,6 +211,9 @@ def is_refresh_token_expired():
 
 
 def request_recently_played():
+    """
+    requests as many recently played tracks from spotify's endpoint as possible and stores them within a file
+    """
     global milliseconds_in_a_day
 
     recently_played_request = check_request(
@@ -213,7 +232,7 @@ def request_recently_played():
 
     response_items = {}
     if not recently_played_request.json()["items"]:
-        return
+        raise NoRecentlyPlayedTracksError
     recently_played_tracks = open("recently_played_tracks.json", "w")
     page_num = 1
     response_items["page " + str(page_num)] = recently_played_request.json()

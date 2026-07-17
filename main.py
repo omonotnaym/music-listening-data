@@ -53,7 +53,11 @@ def listening_history():
     """
     gets the listening history of the user from the past 30 days (for now) and shows them the tracks
     """
-    spotify_requests.request_recently_played()
+    try:
+        spotify_requests.request_recently_played()
+    except spotify_requests.NoRecentlyPlayedTracksError:
+        # display html saying something like: "when pulling for your recently played tracks, we didnt find any data"
+        pass
     # h
     # t
     # m
@@ -66,9 +70,10 @@ def listening_history_pick_rates():
     """
     gives the user the resulting picks rates of their recently played tracks
     """
+
     with open("recently_played_tracks.json", "r") as f:
         recently_played_tracks = json.load(f)
-    return analyzation.combine_recently_played_tracks_picks(
+    picks = analyzation.combine_recently_played_tracks_picks(
         analyzation.detect_recently_played_tracks_first_picks(
             analyzation.get_recently_played_tracks_details(recently_played_tracks)
         ),
@@ -76,3 +81,8 @@ def listening_history_pick_rates():
             analyzation.get_recently_played_tracks_details(recently_played_tracks)
         ),
     )
+    if picks:
+        return picks
+    return {
+        "message": "we detected no picks with your data! this could be an error so please try to request your listening history again and return to get your picks once more"
+    }
