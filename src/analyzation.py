@@ -47,7 +47,7 @@ def detect_recently_played_tracks_picks(tracks):
     return all_picks
 
 
-def get_recently_played_tracks_details(pages):
+def get_recently_played_tracks_details(pages: dict):
     tracks = []
     for page in pages.keys():
         for item in pages[page]["items"]:
@@ -67,6 +67,7 @@ def get_recently_played_tracks_details(pages):
                     played_at=track_played_at,
                 ),
             )
+    tracks.sort(key=lambda track: track["played_at"])
     return tracks
 
 
