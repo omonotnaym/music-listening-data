@@ -85,6 +85,7 @@ def get_recently_played_tracks_details(pages: dict):
                 )
             except KeyError:
                 print("key error")
+    tracks.sort(key=lambda track: track["played_at"])
     return tracks
 
 
