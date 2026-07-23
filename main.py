@@ -33,7 +33,7 @@ def callback(code: str = None):
 @app.get("/")
 def home():
     """
-    displays the html for my home page and alsAnd I Toldo will check for whether or not the tokens need to be refreshed
+    displays the html for my home page and also will check for whether or not the tokens need to be refreshed
     """
     # h
     # t
@@ -54,7 +54,13 @@ def listening_history():
     gets the listening history of the user from the past 30 days (for now) and shows them the tracks
     """
     try:
-        spotify_requests.request_recently_played()
+        spotify_requests.is_refresh_token_expired()
+    except spotify_requests.NotAuthorizedError:
+        # display some html that tells the user what could have happened/went wrong
+        # display html that will prompt them to click something that will redirect them to the authorize enpoint
+        pass
+    try:
+        return spotify_requests.request_recently_played()
     except spotify_requests.NoRecentlyPlayedTracksError:
         # display html saying something like: "when pulling for your recently played tracks, we didnt find any data"
         pass
@@ -70,16 +76,18 @@ def listening_history_pick_rates():
     """
     gives the user the resulting picks rates of their recently played tracks
     """
-
+    try:
+        spotify_requests.is_refresh_token_expired()
+    except spotify_requests.NotAuthorizedError:
+        # display some html that tells the user what could have happened/went wrong
+        # display html that will prompt them to click something that will redirect them to the authorize enpoint
+        pass
     with open("recently_played_tracks.json", "r") as f:
         recently_played_tracks = json.load(f)
     picks = analyzation.combine_recently_played_tracks_picks(
-        analyzation.detect_recently_played_tracks_first_picks(
-            analyzation.get_recently_played_tracks_details(recently_played_tracks)
-        ),
-        analyzation.detect_recently_played_tracks_picks(
-            analyzation.get_recently_played_tracks_details(recently_played_tracks)
-        ),
+        analyzation.detect_all_recently_played_tracks_picks(
+            get_recently_played_tracks_details(recently_played_tracks)
+        )
     )
     if picks:
         return picks
